@@ -60,6 +60,47 @@ public class CommonUtils {
 
 		return emailsList;
 	}
+	
+	/**
+	 * Get list of email from file
+	 * 
+	 * @return List<String>
+	 */
+	public static List<String> getEmailsList(String fileName) {
+
+		List<String> emailsList = new ArrayList<String>();
+		Reader reader = null;
+		CSVReader csvReader = null;
+		try {
+
+			// Get file from resources folder
+			Path inputEmailsPath = Paths.get("src", "main", "resources", fileName);
+			reader = Files.newBufferedReader(inputEmailsPath);
+			csvReader = new CSVReader(reader);
+
+			// Reading Records One by One in a String array
+			String[] nextRecord;
+			while ((nextRecord = csvReader.readNext()) != null) {
+				emailsList.add(nextRecord[0]);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (csvReader != null) {
+					csvReader.close();
+				}
+
+				if (reader != null) {
+					reader.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return emailsList;
+	}
 
 	/**
 	 * Get list of name from input_name.csv file

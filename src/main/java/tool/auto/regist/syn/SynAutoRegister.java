@@ -24,9 +24,9 @@ import tool.auto.common.CommonUtils;
 
 public class SynAutoRegister {
 	
-	private static final String EMAIL = "myhearwillgoonceledion99999999@gmail.com";
+	private static final String EMAIL = "youdonttalkanymoreyoudont88899@gmail.com";
 	private static final String EMAIL_PASS = "Dragon0104146890";
-	private static final String REF_LINK = "https://tokensale.synapse.ai/r/149008";
+	private static final String REF_LINK = "https://tokensale.synapse.ai/r/152187";
 
 	private static WebDriver driver = null;
 	private static List<String> inputNamesList;
@@ -35,7 +35,7 @@ public class SynAutoRegister {
 
 		int indexBegin = 0;
 		int count = 0;
-		String email;
+		String email = null;
 		List<String> emailsList = CommonUtils.getEmailsList();
 		inputNamesList = CommonUtils.getInputNames();
 
@@ -58,13 +58,7 @@ public class SynAutoRegister {
 				confirmMail(email);
 				System.out.println("END" + count);
 			} catch (UnhandledAlertException f) {
-//				try {
-//					Alert alert = driver.switchTo().alert();
-//					alert.accept();
-//				} catch (NoAlertPresentException e) {
-//					e.printStackTrace();
-//				}
-				System.out.println("UnhandledAlertException" + f.getMessage());
+				System.out.println(count + "==> Error mail: " + email);
 			} catch (Exception e) {
 				System.out.println("============= EROR ==============" + e);
 				System.out.println(count);
@@ -153,7 +147,10 @@ public class SynAutoRegister {
 		List<WebElement> listATag;
 		List<WebElement> unReadMailList = driver.findElements(By.xpath("//*[@class='zF']"));
 		WebElement element = null;
+		
 		WebDriverWait wait = new WebDriverWait(driver, 10);
+		wait.until(ExpectedConditions
+				.visibilityOfElementLocated(By.linkText("Click here to be redirected to sign in.")));
 		
 		while (unReadMailList.size() == 0 && count < 3) {
 			driver.get("https://mail.google.com");

@@ -12,7 +12,7 @@ import java.util.Set;
 public class GenerateMailsList {
 
 	public static void main(String[] args) {
-		String inputMail = "myhearwillgoonceledion99999999";
+		String inputMail = "youdonttalkanymoreyoudont12345";
 		Set<String> mailsList = new LinkedHashSet<String>();
 		String temp = inputMail;
 		String correctMail;
@@ -48,7 +48,7 @@ public class GenerateMailsList {
 		try {
 
 			StringBuilder fileContent = new StringBuilder();
-			Path filePath = Paths.get("src", "main", "resources", "generated_mail1.csv");
+			Path filePath = Paths.get("src", "main", "resources", "generated_mail2.csv");
 			File generatedMailFile = new File(filePath.toString());
 
 			for (String mail : mailsList) {
