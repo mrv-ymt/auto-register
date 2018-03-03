@@ -22,11 +22,11 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import tool.auto.common.CommonUtils;
 
-public class SynAutoRegister {
+public class SynAutoRegister3 {
 	
-	private static final String EMAIL = "youdonttalkanymoreyoudont88899@gmail.com";
+	private static final String EMAIL = "youdonttalkanymoreyoudont12345@gmail.com";
 	private static final String EMAIL_PASS = "Dragon0104146890";
-	private static final String REF_LINK = "https://tokensale.synapse.ai/r/152187";
+	private static final String REF_LINK = "https://tokensale.synapse.ai/r/152265";
 
 	private static WebDriver driver = null;
 	private static List<String> inputNamesList;
@@ -36,7 +36,7 @@ public class SynAutoRegister {
 		int indexBegin = 0;
 		int count = 0;
 		String email = null;
-		List<String> emailsList = CommonUtils.getEmailsList();
+		List<String> emailsList = CommonUtils.getEmailsList("email_list2.csv");
 		inputNamesList = CommonUtils.getInputNames();
 
 		Path filePath = Paths.get("src", "main", "resources","service-tool", "geckodriver.exe");

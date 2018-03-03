@@ -14,37 +14,51 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
-public class AutoRegister {
+public class AutoRegisterRunnable implements Runnable {
 
-	private static final String EMAIL = "celedionmyhearwillgoon99999999";
+	private static final String EMAIL = "myheartwillgoonhelio111";
 	private static final String EMAIL_PASS = "Dragon0104146890";
 
 	private static final int PHONE_NUM_LENGTH = 11;
 
+	private Thread thread;
 	private String refUrl;
 	private int fromIndex;
 	private int toIndex;
 	List<String> emailsList;
 	List<String> inputNamesList;
-	private WebDriver driver;
 	
-	public AutoRegister(String refUrl, int fromIndex, int toIndex, List<String> emailsList,
-			List<String> inputNamesList, WebDriver driver) {
+	public AutoRegisterRunnable(String refUrl, int fromIndex, int toIndex, List<String> emailsList,
+			List<String> inputNamesList) {
 		this.refUrl = refUrl;
 		this.fromIndex = fromIndex;
 		this.toIndex = toIndex;
 		this.emailsList = emailsList;
 		this.inputNamesList = inputNamesList;
-		this.driver = driver;
 	}
 
 	public void run() {
 		autoRegister(refUrl, emailsList, inputNamesList, fromIndex, toIndex);
+	}
+	
+	public void start() {
+		System.out.println("Starting " + refUrl);
+		if (thread == null) {
+			thread = new Thread(this, refUrl);
+			thread.start();
+		}
 	}
 	
 	/**
@@ -56,10 +70,17 @@ public class AutoRegister {
 	 * @param fromIndex
 	 * @param toIndex
 	 */
-	private void autoRegister(String refUrl, List<String> emailsList,
+	private static void autoRegister(String refUrl, List<String> emailsList,
 			List<String> inputNamesList, int fromIndex, int toIndex) {
 
 		try {
+			FirefoxOptions firefoxOptions = new FirefoxOptions();
+			firefoxOptions.addPreference("dom.popup_maximum", 0);
+			firefoxOptions.addPreference("privacy.popups.showBrowserMessage", false);
+			WebDriver driver = new FirefoxDriver(firefoxOptions);
+			driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+			driver.manage().window().setPosition(new Point(0,0));
+			driver.manage().window().setSize(new Dimension(683, 393));
 
 			if (emailsList.size() > 0) {
 				int numOfAcc = 0;
@@ -72,16 +93,13 @@ public class AutoRegister {
 				}
 
 				driver.get("https://steward.friendz.io/register");
-				while (!("https://steward.friendz.io/register").equals(driver.getCurrentUrl())) {
-					TimeUnit.SECONDS.sleep(3);
-				}
+				waitForLoad(driver);
 
 				for (int i = fromIndex; i < toIndex; i++) {
 					email = emailsList.get(i);
 					try {
 						fillRegistForm(inputNamesList, email, driver);
 						while (!("https://steward.friendz.io/waitVerification").equals(driver.getCurrentUrl())) {
-
 							if (existsElement("has-error", false, driver)) {
 								if (i < emailsList.size() - 1) {
 									email = emailsList.get(++i);
@@ -95,33 +113,25 @@ public class AutoRegister {
 						numOfAcc++;
 
 						// Confirm mail
-						if (numOfAcc == 10) {
+						if (numOfAcc == 2) {
 							confirmMail(driver);
 							numOfAcc = 0;
 						}
 
 						driver.get("https://steward.friendz.io/logout");
-						while (!("https://steward.friendz.io/login").equals(driver.getCurrentUrl())) {
-							TimeUnit.SECONDS.sleep(3);
-						}
+						waitForLoad(driver);
 
 						driver.get("https://steward.friendz.io/register");
-						while (!("https://steward.friendz.io/register").equals(driver.getCurrentUrl())) {
-							TimeUnit.SECONDS.sleep(2);
-						}
+						waitForLoad(driver);
 					} catch (Exception e) {
 						System.out.println("==== ERROR email: " + email + ": " + e);
 						writeErrorMessages(email);
 						
 						driver.get("https://steward.friendz.io/logout");
-						while (!("https://steward.friendz.io/login").equals(driver.getCurrentUrl())) {
-							TimeUnit.SECONDS.sleep(3);
-						}
+						waitForLoad(driver);
 
 						driver.get("https://steward.friendz.io/register");
-						while (!("https://steward.friendz.io/register").equals(driver.getCurrentUrl())) {
-							TimeUnit.SECONDS.sleep(2);
-						}
+						waitForLoad(driver);
 					}
 				}
 			}
@@ -134,7 +144,7 @@ public class AutoRegister {
 		}
 	}
 
-	private void fillRegistForm(List<String> inputNamesList, String email, WebDriver driver) {
+	private static void fillRegistForm(List<String> inputNamesList, String email, WebDriver driver) {
 
 		WebElement element;
 		element = driver.findElement(By.name("name"));
@@ -160,6 +170,7 @@ public class AutoRegister {
 		element.clear();
 		element.sendKeys(email);
 		element.submit();
+		waitForLoad(driver);
 	}
 
 	/**
@@ -167,7 +178,7 @@ public class AutoRegister {
 	 * 
 	 * @throws InterruptedException
 	 */
-	private void confirmMail(WebDriver driver) throws InterruptedException {
+	private static void confirmMail(WebDriver driver) throws InterruptedException {
 
 		String confirmPath;
 		String selectLinkOpeninNewTab = Keys.chord(Keys.CONTROL, Keys.RETURN);
@@ -204,6 +215,7 @@ public class AutoRegister {
 
 					// Read confirm mail
 					element.click();
+					waitForLoad(driver);
 					TimeUnit.SECONDS.sleep(2);
 					confirmPathsList = driver.findElements(By.tagName("a"));
 
@@ -220,7 +232,7 @@ public class AutoRegister {
 					tabList.addAll(driver.getWindowHandles());
 					while(tabList.size() > 1) {
 						driver.switchTo().window(tabList.get(1));
-						TimeUnit.SECONDS.sleep(2);
+						waitForLoad(driver);
 						driver.close();
 						driver.switchTo().window(tabList.get(0));
 						tabList.remove(1);
@@ -233,6 +245,7 @@ public class AutoRegister {
 			}
 		} catch (Exception e) {
 			confirmMail(driver);
+			System.out.println("Exception: " + e);
 		}
 	}
 
@@ -241,7 +254,7 @@ public class AutoRegister {
 	 * 
 	 * @param errorMsg 
 	 */
-	public void writeErrorMessages(String errorMsg) {
+	public static void writeErrorMessages(String errorMsg) {
 
 		BufferedWriter bufferedWriter = null;
 		FileWriter fileWriter = null;
@@ -293,7 +306,7 @@ public class AutoRegister {
 	}
 	
 
-	private String getRandomPhoneNum(int length) {
+	private static String getRandomPhoneNum(int length) {
 
 		String numChar = "0123456789";
 		StringBuilder phoneNum = new StringBuilder("0");
@@ -318,7 +331,7 @@ public class AutoRegister {
 		return inputNamesList.get(nameIndex) + " " + inputNamesList.get(lastIndex);
 	}
 
-	private boolean existsElement(String name, boolean isId, WebDriver driver) {
+	private static boolean existsElement(String name, boolean isId, WebDriver driver) {
 
 		try {
 			if (isId) {
@@ -330,5 +343,10 @@ public class AutoRegister {
 			return false;
 		}
 		return true;
+	}
+	
+	private static void waitForLoad(WebDriver driver) {
+		new WebDriverWait(driver, 30).until((ExpectedCondition<Boolean>) wd -> ((JavascriptExecutor) wd)
+				.executeScript("return document.readyState").equals("complete"));
 	}
 }

@@ -1,4 +1,4 @@
-package tool.auto.common;
+package tool.auto.regist.friendz;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -12,7 +12,7 @@ import java.util.Set;
 public class GenerateMailsList {
 
 	public static void main(String[] args) {
-		String inputMail = "youdonttalkanymoreyoudont12345";
+		String inputMail = "myheartwillgoonhelio111";
 		Set<String> mailsList = new LinkedHashSet<String>();
 		String temp = inputMail;
 		String correctMail;
@@ -21,8 +21,7 @@ public class GenerateMailsList {
 			
 			if (i > 0) {
 				temp = inputMail.substring(0, i) + "." + inputMail.substring(i, inputMail.length());
-			} 
-			
+			}
 			for (int j = 1; j < temp.length(); j++) {
 				
 				correctMail = temp.substring(0, j) + "." + temp.substring(j, temp.length());
@@ -33,13 +32,9 @@ public class GenerateMailsList {
 		}
 		
 		writeToFile(mailsList);
-		 for (String string : mailsList) {
-			System.out.println(string);
-		}
-		
 		System.out.println("========= Generated " + mailsList.size() + " email =========");
 	}
-	
+
 	private static void writeToFile(Set<String> mailsList) {
 		
 		BufferedWriter bufferedWriter = null;
@@ -48,7 +43,7 @@ public class GenerateMailsList {
 		try {
 
 			StringBuilder fileContent = new StringBuilder();
-			Path filePath = Paths.get("src", "main", "resources", "generated_mail2.csv");
+			Path filePath = Paths.get("src", "main", "resources", "generated_mail.csv");
 			File generatedMailFile = new File(filePath.toString());
 
 			for (String mail : mailsList) {
