@@ -24,9 +24,9 @@ import tool.auto.common.CommonUtils;
 
 public class SynAutoRegister3 {
 	
-	private static final String EMAIL = "youdonttalkanymoreyoudont12345@gmail.com";
+	private static final String EMAIL = "idontlivewithoutyouforever9999@gmail.com";
 	private static final String EMAIL_PASS = "Dragon0104146890";
-	private static final String REF_LINK = "https://tokensale.synapse.ai/r/152265";
+	private static final String REF_LINK = "https://tokensale.synapse.ai/r/168993";
 
 	private static WebDriver driver = null;
 	private static List<String> inputNamesList;
@@ -116,7 +116,7 @@ public class SynAutoRegister3 {
 
 		((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", element);
 
-		TimeUnit.SECONDS.sleep(1);
+		TimeUnit.SECONDS.sleep(3);
 		element = driver.findElement(By.xpath("//*[@id=\"new_user\"]/div[7]/div/div/iframe"));
 		driver.switchTo().frame(element);
 		element = driver.findElement(By.id("recaptcha-anchor"));

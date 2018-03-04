@@ -24,9 +24,9 @@ import tool.auto.common.CommonUtils;
 
 public class SynAutoRegister {
 	
-	private static final String EMAIL = "youdonttalkanymoreyoudont88899@gmail.com";
+	private static final String EMAIL = "idontlivewithoutyouforever1234@gmail.com";
 	private static final String EMAIL_PASS = "Dragon0104146890";
-	private static final String REF_LINK = "https://tokensale.synapse.ai/r/152187";
+	private static final String REF_LINK = "https://tokensale.synapse.ai/r/168978";
 
 	private static WebDriver driver = null;
 	private static List<String> inputNamesList;
@@ -54,7 +54,7 @@ public class SynAutoRegister {
 				System.out.println("START" + count);
 				email = emailsList.get(i);
 
-				if (fillRegistForm(email)) {
+				if (fillRegistForm(email)){
 					CommonUtils.waitForLoad(driver);
 					confirmMail(email);
 				} else {
@@ -77,6 +77,7 @@ public class SynAutoRegister {
 
 		boolean isSuccess = true;
 		WebElement element;
+		
 		driver.get(REF_LINK);
 		CommonUtils.waitForLoad(driver);
 		while (!driver.getCurrentUrl().equals("https://tokensale.synapse.ai/")) {
@@ -116,7 +117,7 @@ public class SynAutoRegister {
 
 		((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", element);
 
-		TimeUnit.SECONDS.sleep(1);
+		TimeUnit.SECONDS.sleep(3);
 		element = driver.findElement(By.xpath("//*[@id=\"new_user\"]/div[7]/div/div/iframe"));
 		driver.switchTo().frame(element);
 		element = driver.findElement(By.id("recaptcha-anchor"));

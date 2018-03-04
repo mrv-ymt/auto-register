@@ -12,7 +12,7 @@ import java.util.Set;
 public class GenerateMailsList {
 
 	public static void main(String[] args) {
-		String inputMail = "youdonttalkanymoreyoudont12345";
+		String inputMail = "idontlivewithoutyouforever9999";
 		Set<String> mailsList = new LinkedHashSet<String>();
 		String temp = inputMail;
 		String correctMail;
