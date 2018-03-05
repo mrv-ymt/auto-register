@@ -19,9 +19,11 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import tool.auto.common.CommonUtils;
+
 public class AutoRegister {
 
-	private static final String EMAIL = "celedionmyhearwillgoon99999999";
+	private static final String EMAIL = "myhearwillgoonceledion88889999";
 	private static final String EMAIL_PASS = "Dragon0104146890";
 
 	private static final int PHONE_NUM_LENGTH = 11;
@@ -62,7 +64,6 @@ public class AutoRegister {
 		try {
 
 			if (emailsList.size() > 0) {
-				int numOfAcc = 0;
 				String email;
 
 				// Go to web
@@ -72,12 +73,13 @@ public class AutoRegister {
 				}
 
 				driver.get("https://steward.friendz.io/register");
-				while (!("https://steward.friendz.io/register").equals(driver.getCurrentUrl())) {
-					TimeUnit.SECONDS.sleep(3);
-				}
+				CommonUtils.waitForLoad(driver);
 
 				for (int i = fromIndex; i < toIndex; i++) {
+					
+					System.out.println("====== START" + (i + 1) + "=======");
 					email = emailsList.get(i);
+					System.out.println(email);
 					try {
 						fillRegistForm(inputNamesList, email, driver);
 						while (!("https://steward.friendz.io/waitVerification").equals(driver.getCurrentUrl())) {
@@ -92,23 +94,17 @@ public class AutoRegister {
 								}
 							}
 						}
-						numOfAcc++;
 
 						// Confirm mail
-						if (numOfAcc == 10) {
-							confirmMail(driver);
-							numOfAcc = 0;
-						}
+						confirmMail(driver);
 
+						TimeUnit.SECONDS.sleep(2);
 						driver.get("https://steward.friendz.io/logout");
-						while (!("https://steward.friendz.io/login").equals(driver.getCurrentUrl())) {
-							TimeUnit.SECONDS.sleep(3);
-						}
+						CommonUtils.waitForLoad(driver);
 
 						driver.get("https://steward.friendz.io/register");
-						while (!("https://steward.friendz.io/register").equals(driver.getCurrentUrl())) {
-							TimeUnit.SECONDS.sleep(2);
-						}
+						CommonUtils.waitForLoad(driver);
+						System.out.println("====== END =======");
 					} catch (Exception e) {
 						System.out.println("==== ERROR email: " + email + ": " + e);
 						writeErrorMessages(email);
@@ -160,6 +156,7 @@ public class AutoRegister {
 		element.clear();
 		element.sendKeys(email);
 		element.submit();
+		CommonUtils.waitForLoad(driver);
 	}
 
 	/**
@@ -175,43 +172,48 @@ public class AutoRegister {
 		List<WebElement> confirmPathsList;
 
 		try {
+			
 			// Open Gmail
 			driver.get("https://mail.google.com");
-			TimeUnit.SECONDS.sleep(2);
+			CommonUtils.waitForLoad(driver);
+			TimeUnit.SECONDS.sleep(1);
 			if (!"https://mail.google.com/mail/u/0/#inbox".equals(driver.getCurrentUrl())) {
 				WebElement gmail = driver.findElement(By.id("identifierId"));
 				gmail.sendKeys(EMAIL);
 				driver.findElement(By.id("identifierNext")).click();
-
-				TimeUnit.SECONDS.sleep(2);
+				CommonUtils.waitForLoad(driver);
+				TimeUnit.MILLISECONDS.sleep(500);
 				WebElement gmailPass = driver.findElement(By.name("password"));
 				gmailPass.sendKeys(EMAIL_PASS);
 				driver.findElement(By.id("passwordNext")).click();
 			}
-
-			TimeUnit.SECONDS.sleep(2);
+			CommonUtils.waitForLoad(driver);
+			TimeUnit.SECONDS.sleep(1);
+			
+			int count = 0;
 			List<WebElement> unReadMailList = driver.findElements(By.xpath("//*[@class='zF']"));
-			int numOfFriendzMail = 0;
-			int numOfConfirmedFol = 0;
-			for (WebElement element : unReadMailList) {
-				if (element.isDisplayed() && "FriendzDashboard".equals(element.getText())) {
-					numOfFriendzMail++;
-				}
+
+			while (unReadMailList.size() == 0 && count < 3) {
+				driver.get("https://mail.google.com");
+				TimeUnit.SECONDS.sleep(2);
+				unReadMailList = driver.findElements(By.xpath("//*[@class='zF']"));
+				count++;
 			}
 
-			for (WebElement element : unReadMailList) {
-				if (element.isDisplayed() && "FriendzDashboard".equals(element.getText())) {
+			for (WebElement unReadMail : unReadMailList) {
+				if (unReadMail.isDisplayed() && "FriendzDashboard".equals(unReadMail.getText())) {
 
 					// Read confirm mail
-					element.click();
+					unReadMail.click();
+					CommonUtils.waitForLoad(driver);
 					TimeUnit.SECONDS.sleep(2);
 					confirmPathsList = driver.findElements(By.tagName("a"));
-
 					for (WebElement k : confirmPathsList) {
 						if (k.getText().indexOf("https://steward.friendz.io/verificationUser") != -1) {
 							confirmPath = k.getText();
 							driver.findElement(By.linkText(confirmPath)).sendKeys(selectLinkOpeninNewTab);
 							TimeUnit.SECONDS.sleep(1);
+							break;
 						}
 					}
 
@@ -220,18 +222,16 @@ public class AutoRegister {
 					tabList.addAll(driver.getWindowHandles());
 					while(tabList.size() > 1) {
 						driver.switchTo().window(tabList.get(1));
-						TimeUnit.SECONDS.sleep(2);
+						CommonUtils.waitForLoad(driver);
 						driver.close();
 						driver.switchTo().window(tabList.get(0));
 						tabList.remove(1);
 					}
-
-					if (++numOfConfirmedFol < numOfFriendzMail) {
-						confirmMail(driver);
-					}
+					break;
 				}
 			}
 		} catch (Exception e) {
+			System.out.println("ERROR:" + e);
 			confirmMail(driver);
 		}
 	}

@@ -9,36 +9,42 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.openqa.selenium.UnexpectedAlertBehaviour;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.CapabilityType;
 
 import com.opencsv.CSVReader;
 
 public class RunApplication {
 
-	private static final String GECKO_DRIVER = "D:\\Soft\\geckodriver-v0.19.1-win64\\geckodriver.exe";
-	private static final int MAX_NUM_MAIL = 110;
+	private static final int MAX_NUM_MAIL = 120;
 
 	public static void main(String[] arg) throws InterruptedException {
 
 		List<String> emailsList = getEmailsList();
 		List<String> inputNamesList = getInputNames();
 
-		System.setProperty("webdriver.gecko.driver", GECKO_DRIVER);
+		Path filePath = Paths.get("src", "main", "resources","service-tool", "geckodriver.exe");
+		System.setProperty("webdriver.gecko.driver", filePath.toString());
 		List<String> refUrlsList = new ArrayList<String>();
-		refUrlsList.add("https://steward.friendz.io/go?r=NDkxNzY3");
-		refUrlsList.add("https://steward.friendz.io/go?r=NDkxOTAy");
+		refUrlsList.add("https://steward.friendz.io/go?r=NzExMTU5");
 
 		int fromIndex;
 		int toIndex;
 		int numOfEmail = emailsList.size();
 		AutoRegister autoRegister;
 		
-		FirefoxOptions firefoxOptions = new FirefoxOptions();
-		firefoxOptions.addPreference("dom.popup_maximum", 0);
-		firefoxOptions.addPreference("privacy.popups.showBrowserMessage", false);
-		WebDriver driver = new FirefoxDriver(firefoxOptions);
+//		FirefoxOptions firefoxOptions = new FirefoxOptions();
+//		firefoxOptions.setCapability(CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR, UnexpectedAlertBehaviour.ACCEPT);
+//		WebDriver driver = new FirefoxDriver(firefoxOptions);
+		
+		Path filePath1 = Paths.get("src", "main", "resources","service-tool", "chromedriver.exe");
+		System.setProperty("webdriver.chrome.driver", filePath1.toString());
+		ChromeOptions options = new ChromeOptions();
+		options.setCapability(CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR, UnexpectedAlertBehaviour.ACCEPT);
+		WebDriver driver = new ChromeDriver(options);
 		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 
 		for (int i = 0; i < refUrlsList.size(); i++) {
