@@ -28,7 +28,7 @@ public class SynAutoRegister3 {
 	
 	private static final String EMAIL = "pleasetellmywhyplease123456789@gmail.com";
 	private static final String EMAIL_PASS = "Dragon0104146890";
-	private static final String REF_LINK = "https://tokensale.synapse.ai/r/186564";
+	private static final String REF_LINK = "https://tokensale.synapse.ai/r/186698";
 
 	private static WebDriver driver = null;
 	private static List<String> inputNamesList;

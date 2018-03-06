@@ -26,9 +26,9 @@ import tool.auto.common.CommonUtils;
 
 public class SynAutoRegister {
 	
-	private static final String EMAIL = "idontlivewithoutyouforever1234@gmail.com";
+	private static final String EMAIL = "canyouopenyoucomputerplease123@gmail.com";
 	private static final String EMAIL_PASS = "Dragon0104146890";
-	private static final String REF_LINK = "https://tokensale.synapse.ai/r/186577";
+	private static final String REF_LINK = "https://tokensale.synapse.ai/r/186687";
 
 	private static WebDriver driver = null;
 	private static List<String> inputNamesList;
