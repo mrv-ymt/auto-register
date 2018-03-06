@@ -20,7 +20,7 @@ import tool.auto.common.CommonUtils;
 public class AutoRegisterSingle {
 
 	private static final int MAX_NUM_MAIL = 120;
-	private static final String EMAIL = "myhearwillgoonceledion88889999";
+	private static final String EMAIL = "pleasetellmywhyplease123456789";
 	private static final String EMAIL_PASS = "Dragon0104146890";
 
 	private static final int PHONE_NUM_LENGTH = 11;
@@ -36,7 +36,7 @@ public class AutoRegisterSingle {
 		Path filePath = Paths.get("src", "main", "resources","service-tool", "geckodriver.exe");
 		System.setProperty("webdriver.gecko.driver", filePath.toString());
 		List<String> refUrlsList = new ArrayList<String>();
-		refUrlsList.add("https://steward.friendz.io/go?r=NzE1OTk1");
+		refUrlsList.add("https://steward.friendz.io/go?r=NzE2OTE3");
 
 		int fromIndex;
 		int toIndex;

@@ -13,6 +13,8 @@ import org.openqa.selenium.UnexpectedAlertBehaviour;
 import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.remote.CapabilityType;
@@ -26,7 +28,7 @@ public class SynAutoRegister {
 	
 	private static final String EMAIL = "idontlivewithoutyouforever1234@gmail.com";
 	private static final String EMAIL_PASS = "Dragon0104146890";
-	private static final String REF_LINK = "https://tokensale.synapse.ai/r/168978";
+	private static final String REF_LINK = "https://tokensale.synapse.ai/r/186577";
 
 	private static WebDriver driver = null;
 	private static List<String> inputNamesList;
@@ -36,7 +38,7 @@ public class SynAutoRegister {
 		int indexBegin = 0;
 		int count = 0;
 		String email = null;
-		List<String> emailsList = CommonUtils.getEmailsList();
+		List<String> emailsList = CommonUtils.getEmailsList("email_list.txt");
 		inputNamesList = CommonUtils.getInputNames();
 
 		Path filePath = Paths.get("src", "main", "resources","service-tool", "geckodriver.exe");
@@ -45,6 +47,14 @@ public class SynAutoRegister {
 		firefoxOptions.setCapability(CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR, UnexpectedAlertBehaviour.ACCEPT);
 		driver = new FirefoxDriver(firefoxOptions);
 		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+		driver.manage().deleteAllCookies();
+		
+//		Path filePath = Paths.get("src", "main", "resources","service-tool", "chromedriver.exe");
+//		System.setProperty("webdriver.chrome.driver", filePath.toString());
+//		ChromeOptions options = new ChromeOptions();
+//		options.setCapability(CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR, UnexpectedAlertBehaviour.ACCEPT);
+//		driver = new ChromeDriver(options);
+//		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 
 		// Go to web		
 		for (int i = indexBegin; i < emailsList.size() ; i++) {
@@ -54,7 +64,7 @@ public class SynAutoRegister {
 				System.out.println("START" + count);
 				email = emailsList.get(i);
 
-				if (fillRegistForm(email)){
+				if (fillRegistForm(email)) {
 					CommonUtils.waitForLoad(driver);
 					confirmMail(email);
 				} else {
@@ -77,7 +87,6 @@ public class SynAutoRegister {
 
 		boolean isSuccess = true;
 		WebElement element;
-		
 		driver.get(REF_LINK);
 		CommonUtils.waitForLoad(driver);
 		while (!driver.getCurrentUrl().equals("https://tokensale.synapse.ai/")) {
@@ -117,7 +126,7 @@ public class SynAutoRegister {
 
 		((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", element);
 
-		TimeUnit.SECONDS.sleep(3);
+		TimeUnit.SECONDS.sleep(1);
 		element = driver.findElement(By.xpath("//*[@id=\"new_user\"]/div[7]/div/div/iframe"));
 		driver.switchTo().frame(element);
 		element = driver.findElement(By.id("recaptcha-anchor"));
@@ -161,6 +170,7 @@ public class SynAutoRegister {
 			driver.findElement(By.id("passwordNext")).click();
 		}
 		CommonUtils.waitForLoad(driver);
+		TimeUnit.SECONDS.sleep(1);
 
 		int count = 0;
 		List<String> tabList = null;
@@ -183,6 +193,8 @@ public class SynAutoRegister {
 					// Open synapse mail
 					j.click();
 					CommonUtils.waitForLoad(driver);
+					((JavascriptExecutor) driver).executeScript("window.onbeforeunload = function(e){};");
+
 					listATag = driver.findElements(By.linkText("Confirm my account"));
 					JavascriptExecutor js = (JavascriptExecutor) driver;
 					js.executeScript("arguments[0].click();", listATag.get(listATag.size() - 1));
