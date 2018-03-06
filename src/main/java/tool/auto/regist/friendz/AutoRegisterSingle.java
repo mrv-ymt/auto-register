@@ -1,52 +1,71 @@
 package tool.auto.regist.friendz;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.UnexpectedAlertBehaviour;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.CapabilityType;
 
 import tool.auto.common.CommonUtils;
 
-public class AutoRegister {
+public class AutoRegisterSingle {
 
+	private static final int MAX_NUM_MAIL = 120;
 	private static final String EMAIL = "myhearwillgoonceledion88889999";
 	private static final String EMAIL_PASS = "Dragon0104146890";
 
 	private static final int PHONE_NUM_LENGTH = 11;
 
-	private String refUrl;
-	private int fromIndex;
-	private int toIndex;
 	List<String> emailsList;
 	List<String> inputNamesList;
-	private WebDriver driver;
-	
-	public AutoRegister(String refUrl, int fromIndex, int toIndex, List<String> emailsList,
-			List<String> inputNamesList, WebDriver driver) {
-		this.refUrl = refUrl;
-		this.fromIndex = fromIndex;
-		this.toIndex = toIndex;
-		this.emailsList = emailsList;
-		this.inputNamesList = inputNamesList;
-		this.driver = driver;
-	}
 
-	public void run() {
-		autoRegister(refUrl, emailsList, inputNamesList, fromIndex, toIndex);
+	public static void main(String[] arg) throws InterruptedException {
+
+		List<String> emailsList = CommonUtils.getEmailsList();
+		List<String> inputNamesList = CommonUtils.getInputNames();
+
+		Path filePath = Paths.get("src", "main", "resources","service-tool", "geckodriver.exe");
+		System.setProperty("webdriver.gecko.driver", filePath.toString());
+		List<String> refUrlsList = new ArrayList<String>();
+		refUrlsList.add("https://steward.friendz.io/go?r=NzE1OTk1");
+
+		int fromIndex;
+		int toIndex;
+		int numOfEmail = emailsList.size();
+		
+//		FirefoxOptions firefoxOptions = new FirefoxOptions();
+//		firefoxOptions.setCapability(CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR, UnexpectedAlertBehaviour.ACCEPT);
+//		WebDriver driver = new FirefoxDriver(firefoxOptions);
+		
+		Path filePath1 = Paths.get("src", "main", "resources","service-tool", "chromedriver.exe");
+		System.setProperty("webdriver.chrome.driver", filePath1.toString());
+		ChromeOptions options = new ChromeOptions();
+		options.setCapability(CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR, UnexpectedAlertBehaviour.ACCEPT);
+		WebDriver driver = new ChromeDriver(options);
+		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+
+		for (int i = 0; i < refUrlsList.size(); i++) {
+			fromIndex = i * MAX_NUM_MAIL;
+			toIndex = i * MAX_NUM_MAIL + (MAX_NUM_MAIL - 1);
+
+			if (fromIndex >= numOfEmail) {
+				break;
+			}
+			if (toIndex >= numOfEmail) {
+				toIndex = numOfEmail;
+			}
+
+			autoRegister(refUrlsList.get(i), fromIndex, toIndex, emailsList, inputNamesList, driver);
+		}
 	}
 	
 	/**
@@ -58,8 +77,8 @@ public class AutoRegister {
 	 * @param fromIndex
 	 * @param toIndex
 	 */
-	private void autoRegister(String refUrl, List<String> emailsList,
-			List<String> inputNamesList, int fromIndex, int toIndex) {
+	private static void autoRegister(String refUrl, int fromIndex, int toIndex, List<String> emailsList,
+			List<String> inputNamesList, WebDriver driver) {
 
 		try {
 
@@ -84,7 +103,7 @@ public class AutoRegister {
 						fillRegistForm(inputNamesList, email, driver);
 						while (!("https://steward.friendz.io/waitVerification").equals(driver.getCurrentUrl())) {
 
-							if (existsElement("has-error", false, driver)) {
+							if (CommonUtils.existsElement("has-error", 1, driver)) {
 								if (i < emailsList.size() - 1) {
 									email = emailsList.get(++i);
 									fillRegistForm(inputNamesList, email, driver);
@@ -107,7 +126,7 @@ public class AutoRegister {
 						System.out.println("====== END =======");
 					} catch (Exception e) {
 						System.out.println("==== ERROR email: " + email + ": " + e);
-						writeErrorMessages(email);
+						CommonUtils.writeErrorMessages(email);
 						
 						driver.get("https://steward.friendz.io/logout");
 						while (!("https://steward.friendz.io/login").equals(driver.getCurrentUrl())) {
@@ -130,12 +149,12 @@ public class AutoRegister {
 		}
 	}
 
-	private void fillRegistForm(List<String> inputNamesList, String email, WebDriver driver) {
+	private static void fillRegistForm(List<String> inputNamesList, String email, WebDriver driver) {
 
 		WebElement element;
 		element = driver.findElement(By.name("name"));
 		element.clear();
-		element.sendKeys(getRandomName(inputNamesList));
+		element.sendKeys(CommonUtils.getRandomName(inputNamesList));
 
 		element = driver.findElement(By.name("email"));
 		element.clear();
@@ -143,7 +162,7 @@ public class AutoRegister {
 
 		element = driver.findElement(By.name("phone"));
 		element.clear();
-		element.sendKeys(getRandomPhoneNum(PHONE_NUM_LENGTH));
+		element.sendKeys(CommonUtils.getRandomPhoneNum(PHONE_NUM_LENGTH));
 
 		element = driver.findElement(By.name("country"));
 		element.sendKeys("DE - GERMANY");
@@ -164,7 +183,7 @@ public class AutoRegister {
 	 * 
 	 * @throws InterruptedException
 	 */
-	private void confirmMail(WebDriver driver) throws InterruptedException {
+	private static void confirmMail(WebDriver driver) throws InterruptedException {
 
 		String confirmPath;
 		String selectLinkOpeninNewTab = Keys.chord(Keys.CONTROL, Keys.RETURN);
@@ -234,101 +253,5 @@ public class AutoRegister {
 			System.out.println("ERROR:" + e);
 			confirmMail(driver);
 		}
-	}
-
-	/**
-	 * Write error messages to error.log file
-	 * 
-	 * @param errorMsg 
-	 */
-	public void writeErrorMessages(String errorMsg) {
-
-		BufferedWriter bufferedWriter = null;
-		FileWriter fileWriter = null;
-		BufferedReader bufferedReader = null;
-		FileReader fileReader = null;
-
-		try {
-			String currentLine;
-			StringBuilder fileContent = new StringBuilder();
-
-			Path filePath = Paths.get("src", "main", "resources", "error_mail.csv");
-			File logFile = new File(filePath.toString());
-
-			// If the log file existed then read content of file, after that append new content into that one.
-			if (logFile.length() > 0) {
-				fileReader = new FileReader(logFile);
-				bufferedReader = new BufferedReader(fileReader);
-
-				while ((currentLine = bufferedReader.readLine()) != null) {
-					if (currentLine != null) {
-						fileContent.append(currentLine + "\n");
-					}
-				}
-			}
-
-			fileContent.append(errorMsg + "\n");
-
-			fileWriter = new FileWriter(logFile);
-			bufferedWriter = new BufferedWriter(fileWriter);
-			bufferedWriter.write(fileContent.toString());
-		} catch (IOException e) {
-		} finally {
-			try {
-				if (bufferedWriter != null) {
-					bufferedWriter.close();
-				}
-				if (fileWriter != null) {
-					fileWriter.close();
-				}
-				if (fileReader != null) {
-					fileReader.close();
-				}
-				if (bufferedReader != null) {
-					bufferedReader.close();
-				}
-			} catch (IOException ex) {
-			}
-		}
-	}
-	
-
-	private String getRandomPhoneNum(int length) {
-
-		String numChar = "0123456789";
-		StringBuilder phoneNum = new StringBuilder("0");
-		Random rand = new Random();
-		char charAt;
-
-		for (int i = 0; i < length; i++) {
-			charAt = numChar.charAt(rand.nextInt(numChar.length()));
-			while (i == 0 && charAt == '0') {
-				charAt = numChar.charAt(rand.nextInt(numChar.length()));
-			}
-			phoneNum.append(charAt);
-		}
-
-		return phoneNum.toString();
-	}
-
-	private static String getRandomName(List<String> inputNamesList) {
-		Random rand = new Random();
-		int nameIndex = rand.nextInt(inputNamesList.size());
-		int lastIndex = rand.nextInt(inputNamesList.size());
-		return inputNamesList.get(nameIndex) + " " + inputNamesList.get(lastIndex);
-	}
-
-	private boolean existsElement(String name, boolean isId, WebDriver driver) {
-
-		try {
-			if (isId) {
-				driver.findElement(By.id(name));
-			} else {
-				driver.findElement(By.className(name));
-			}
-		} catch (NoSuchElementException e) {
-			return false;
-		}
-		return true;
 	}
 }

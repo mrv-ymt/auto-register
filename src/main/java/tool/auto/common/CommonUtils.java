@@ -1,8 +1,11 @@
 package tool.auto.common;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Reader;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -16,8 +19,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import com.opencsv.CSVReader;
-
 public class CommonUtils {
 
 	/**
@@ -28,36 +29,31 @@ public class CommonUtils {
 	public static List<String> getEmailsList() {
 
 		List<String> emailsList = new ArrayList<String>();
-		Reader reader = null;
-		CSVReader csvReader = null;
+		Path inputNamesPath = Paths.get("src", "main", "resources", "email_list.txt");
+		BufferedReader br = null;
+		FileReader fr = null;
+
 		try {
+			fr = new FileReader(inputNamesPath.toString());
+			br = new BufferedReader(fr);
 
-			// Get file from resources folder
-			Path inputEmailsPath = Paths.get("src", "main", "resources", "email_list.csv");
-			reader = Files.newBufferedReader(inputEmailsPath);
-			csvReader = new CSVReader(reader);
-
-			// Reading Records One by One in a String array
-			String[] nextRecord;
-			while ((nextRecord = csvReader.readNext()) != null) {
-				emailsList.add(nextRecord[0]);
+			String sCurrentLine;
+			while ((sCurrentLine = br.readLine()) != null) {
+				emailsList.add(sCurrentLine.trim());
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
 			try {
-				if (csvReader != null) {
-					csvReader.close();
-				}
+				if (br != null)
+					br.close();
 
-				if (reader != null) {
-					reader.close();
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
+				if (fr != null)
+					fr.close();
+			} catch (IOException ex) {
+				ex.printStackTrace();
 			}
 		}
-
 		return emailsList;
 	}
 	
@@ -69,36 +65,31 @@ public class CommonUtils {
 	public static List<String> getEmailsList(String fileName) {
 
 		List<String> emailsList = new ArrayList<String>();
-		Reader reader = null;
-		CSVReader csvReader = null;
+		Path inputNamesPath = Paths.get("src", "main", "resources", fileName);
+		BufferedReader br = null;
+		FileReader fr = null;
+
 		try {
+			fr = new FileReader(inputNamesPath.toString());
+			br = new BufferedReader(fr);
 
-			// Get file from resources folder
-			Path inputEmailsPath = Paths.get("src", "main", "resources", fileName);
-			reader = Files.newBufferedReader(inputEmailsPath);
-			csvReader = new CSVReader(reader);
-
-			// Reading Records One by One in a String array
-			String[] nextRecord;
-			while ((nextRecord = csvReader.readNext()) != null) {
-				emailsList.add(nextRecord[0]);
+			String sCurrentLine;
+			while ((sCurrentLine = br.readLine()) != null) {
+				emailsList.add(sCurrentLine.trim());
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
 			try {
-				if (csvReader != null) {
-					csvReader.close();
-				}
+				if (br != null)
+					br.close();
 
-				if (reader != null) {
-					reader.close();
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
+				if (fr != null)
+					fr.close();
+			} catch (IOException ex) {
+				ex.printStackTrace();
 			}
 		}
-
 		return emailsList;
 	}
 
@@ -110,34 +101,31 @@ public class CommonUtils {
 	public static List<String> getInputNames() {
 
 		List<String> inputNamesList = new ArrayList<String>();
-		Reader reader = null;
-		CSVReader csvReader = null;
-		try {
-			Path inputNamesPath = Paths.get("src", "main", "resources", "input_name.csv");
-			reader = Files.newBufferedReader(inputNamesPath);
-			csvReader = new CSVReader(reader);
+		Path inputNamesPath = Paths.get("src", "main", "resources", "input_name.txt");
+		BufferedReader br = null;
+		FileReader fr = null;
 
-			// Reading Records One by One in a String array
-			String[] nextRecord;
-			while ((nextRecord = csvReader.readNext()) != null) {
-				inputNamesList.add(nextRecord[0].trim());
+		try {
+			fr = new FileReader(inputNamesPath.toString());
+			br = new BufferedReader(fr);
+
+			String sCurrentLine;
+			while ((sCurrentLine = br.readLine()) != null) {
+				inputNamesList.add(sCurrentLine.trim());
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
 			try {
-				if (csvReader != null) {
-					csvReader.close();
-				}
+				if (br != null)
+					br.close();
 
-				if (reader != null) {
-					reader.close();
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
+				if (fr != null)
+					fr.close();
+			} catch (IOException ex) {
+				ex.printStackTrace();
 			}
 		}
-
 		return inputNamesList;
 	}
 	
@@ -151,6 +139,24 @@ public class CommonUtils {
 		Random rand = new Random();
 		int nameIndex = rand.nextInt(inputNamesList.size());
 		return inputNamesList.get(nameIndex);
+	}
+	
+	public static String getRandomPhoneNum(int length) {
+
+		String numChar = "0123456789";
+		StringBuilder phoneNum = new StringBuilder("0");
+		Random rand = new Random();
+		char charAt;
+
+		for (int i = 0; i < length; i++) {
+			charAt = numChar.charAt(rand.nextInt(numChar.length()));
+			while (i == 0 && charAt == '0') {
+				charAt = numChar.charAt(rand.nextInt(numChar.length()));
+			}
+			phoneNum.append(charAt);
+		}
+
+		return phoneNum.toString();
 	}
 	
 	/**
@@ -211,4 +217,59 @@ public class CommonUtils {
 		return listMail;
 	}
 
+	/**
+	 * Write error messages to error.log file
+	 * 
+	 * @param errorMsg 
+	 */
+	public static void writeErrorMessages(String errorMsg) {
+
+		BufferedWriter bufferedWriter = null;
+		FileWriter fileWriter = null;
+		BufferedReader bufferedReader = null;
+		FileReader fileReader = null;
+
+		try {
+			String currentLine;
+			StringBuilder fileContent = new StringBuilder();
+
+			Path filePath = Paths.get("src", "main", "resources", "error_mail.txt");
+			File logFile = new File(filePath.toString());
+
+			// If the log file existed then read content of file, after that append new content into that one.
+			if (logFile.length() > 0) {
+				fileReader = new FileReader(logFile);
+				bufferedReader = new BufferedReader(fileReader);
+
+				while ((currentLine = bufferedReader.readLine()) != null) {
+					if (currentLine != null) {
+						fileContent.append(currentLine + "\n");
+					}
+				}
+			}
+
+			fileContent.append(errorMsg + "\n");
+
+			fileWriter = new FileWriter(logFile);
+			bufferedWriter = new BufferedWriter(fileWriter);
+			bufferedWriter.write(fileContent.toString());
+		} catch (IOException e) {
+		} finally {
+			try {
+				if (bufferedWriter != null) {
+					bufferedWriter.close();
+				}
+				if (fileWriter != null) {
+					fileWriter.close();
+				}
+				if (fileReader != null) {
+					fileReader.close();
+				}
+				if (bufferedReader != null) {
+					bufferedReader.close();
+				}
+			} catch (IOException ex) {
+			}
+		}
+	}
 }

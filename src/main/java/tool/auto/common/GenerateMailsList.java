@@ -48,7 +48,7 @@ public class GenerateMailsList {
 		try {
 
 			StringBuilder fileContent = new StringBuilder();
-			Path filePath = Paths.get("src", "main", "resources", "generated_mail2.csv");
+			Path filePath = Paths.get("src", "main", "resources", "generated_mail2.txt");
 			File generatedMailFile = new File(filePath.toString());
 
 			for (String mail : mailsList) {
