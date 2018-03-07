@@ -236,6 +236,7 @@ public class SynAutoRegister {
 
 					driver.switchTo().window(tabList.get(0));
 					CommonUtils.waitForLoad(driver);
+					((JavascriptExecutor) driver).executeScript("window.onbeforeunload = function(e){};");
 					driver.close();
 					driver.switchTo().window(tabList.get(1));
 					return;

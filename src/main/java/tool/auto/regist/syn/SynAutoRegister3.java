@@ -193,8 +193,6 @@ public class SynAutoRegister3 {
 					// Open synapse mail
 					j.click();
 					CommonUtils.waitForLoad(driver);
-					((JavascriptExecutor) driver).executeScript("window.onbeforeunload = function(e){};");
-
 					listATag = driver.findElements(By.linkText("Confirm my account"));
 					JavascriptExecutor js = (JavascriptExecutor) driver;
 					js.executeScript("arguments[0].click();", listATag.get(listATag.size() - 1));
@@ -236,6 +234,7 @@ public class SynAutoRegister3 {
 
 					driver.switchTo().window(tabList.get(0));
 					CommonUtils.waitForLoad(driver);
+					((JavascriptExecutor) driver).executeScript("window.onbeforeunload = function(e){};");
 					driver.close();
 					driver.switchTo().window(tabList.get(1));
 					return;
