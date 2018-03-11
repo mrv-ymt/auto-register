@@ -22,7 +22,7 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-public class AutoCreateMEW {
+public class AutoCreateMEW2 {
 	private static final String PASS = "Dragon01689933430";
 	private static final String MEW = "https://www.myetherwallet.com/";
 	private static ChromeDriver driver;
@@ -157,7 +157,7 @@ public class AutoCreateMEW {
 
 			SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
 			String date = format.format(new Date());
-			Path filePath = Paths.get("src", "main", "resources" , "mew", "mews-" + date + ".csv");
+			Path filePath = Paths.get("src", "main", "resources" , "mew", "mews-" + date + "_2.csv");
 			File logFile = new File(filePath.toString());
 
 			// If the log file existed then read content of file, after that append new content into that one.

@@ -127,7 +127,7 @@ Gill
 Dawson
 Ball
 Burton
-O'brien
+Obrien
 Watts
 Rose
 Booth
@@ -197,14 +197,14 @@ Hodgson
 Robson
 Curtis
 Hopkins
-O'connor
+Oconnor
 Harper
 Coleman
 Watkins
 Moss
 Mccarthy
 Chambers
-O'neill
+Oneill
 Griffin
 Sharp
 Hardy
@@ -357,7 +357,7 @@ Little
 Archer
 Warner
 Waters
-O'sullivan
+Osullivan
 Farrell
 Brookes
 Atkins
@@ -488,7 +488,7 @@ Parkes
 Wyatt
 Fry
 Lees
-O'donnell
+Odonnell
 Craig
 Forster
 Mckenzie

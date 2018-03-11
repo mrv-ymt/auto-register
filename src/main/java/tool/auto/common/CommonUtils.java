@@ -16,7 +16,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -102,7 +101,7 @@ public class CommonUtils {
 	public static List<String> getInputNames() {
 
 		List<String> inputNamesList = new ArrayList<String>();
-		Path inputNamesPath = Paths.get("src", "main", "resources", "input_name.txt");
+		Path inputNamesPath = Paths.get("src", "main", "resources", "input-name", "input_name.txt");
 		BufferedReader br = null;
 		FileReader fr = null;
 
@@ -131,6 +130,78 @@ public class CommonUtils {
 	}
 	
 	/**
+	 * Get list of name from input_name.csv file
+	 * 
+	 * @return List<String>
+	 */
+	public static List<String> getMewsList() {
+
+		List<String> mewsList = new ArrayList<String>();
+		Path inputNamesPath = Paths.get("src", "main", "resources", "mew", "mew-list.txt");
+		BufferedReader br = null;
+		FileReader fr = null;
+
+		try {
+			fr = new FileReader(inputNamesPath.toString());
+			br = new BufferedReader(fr);
+
+			String sCurrentLine;
+			while ((sCurrentLine = br.readLine()) != null) {
+				mewsList.add(sCurrentLine.trim());
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (br != null)
+					br.close();
+
+				if (fr != null)
+					fr.close();
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}
+		return mewsList;
+	}
+	
+	/**
+	 * Get list of name from input_name.csv file
+	 * 
+	 * @return List<String>
+	 */
+	public static List<String> getMewsList(String fileName) {
+
+		List<String> mewsList = new ArrayList<String>();
+		Path inputNamesPath = Paths.get("src", "main", "resources", "mew", fileName);
+		BufferedReader br = null;
+		FileReader fr = null;
+
+		try {
+			fr = new FileReader(inputNamesPath.toString());
+			br = new BufferedReader(fr);
+
+			String sCurrentLine;
+			while ((sCurrentLine = br.readLine()) != null) {
+				mewsList.add(sCurrentLine.trim());
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (br != null)
+					br.close();
+
+				if (fr != null)
+					fr.close();
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}
+		return mewsList;
+	}
+	
+	/**
 	 * Get random name from list of input name
 	 * 
 	 * @param inputNamesList
@@ -142,6 +213,12 @@ public class CommonUtils {
 		return inputNamesList.get(nameIndex);
 	}
 	
+	/**
+	 * Get random name from list of input name
+	 * 
+	 * @param inputNamesList
+	 * @return name;
+	 */
 	public static String getRandomPhoneNum(int length) {
 
 		String numChar = "0123456789";
@@ -158,6 +235,28 @@ public class CommonUtils {
 		}
 
 		return phoneNum.toString();
+	}
+	
+	/**
+	 * Get random username
+	 * 
+	 * @param inputNamesList
+	 * @return name;
+	 */
+	public static String getRandomUsername(List<String> inputNamesList) {
+		Random rand = new Random();
+		int nameIndex = rand.nextInt(inputNamesList.size());
+		String name = inputNamesList.get(nameIndex);
+		
+		String numChar = "0123456789";
+		String num = "";
+		char charAt;
+
+		for (int i = 0; i < 6; i++) {
+			charAt = numChar.charAt(rand.nextInt(numChar.length()));
+			num += charAt;
+		}
+		return name + num;
 	}
 	
 	/**
