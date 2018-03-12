@@ -24,7 +24,7 @@ public class HubtrexAuto {
 	private static final int MAX_NUM_MAIL = 120;
 	private static final String EMAIL = "idontlivewithoutyouforever9999";
 	private static final String EMAIL_PASS = "Dragon0104146890";
-	private static final String REF_LINK = "https://account.hubtrex.com/G2MYSFCW";
+	private static final String REF_LINK = "https://account.hubtrex.com/I4JH7R7S";
 
 	private static List<String> emailsList;
 	private static List<String> inputNamesList;
