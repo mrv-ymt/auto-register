@@ -1,13 +1,20 @@
 package tool.auto.readexcel;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.LineIterator;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
@@ -15,11 +22,13 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import com.day.text.csv.Csv;
+
 public class ImportTagServlet {
 
 	private static final String FILE_PATH = "C:\\Users\\Administrator\\Desktop\\Adastria_AEM_Design_Tag_0207.xlsx";
 
-	public static void main(String[] args) {
+	public static void main1(String[] args) {
 
 		XSSFWorkbook workbook = null;
 		FileInputStream excelFile = null;
@@ -121,5 +130,94 @@ public class ImportTagServlet {
 			}
 		}
 
+	}
+	
+	public static void main(String[] args) {
+		List<String[]> fsdf = readCsvFile("D:\\AEM\\AEM6.3\\csv\\adastria\\DesignTag.csv");
+		for (String[] strings : fsdf) {
+			System.out.println(strings[2]);
+		}
+	}
+	
+	/**
+	 * Read content of CSV file
+	 * 
+	 * @param filePath
+	 * @return csvFileContent
+	 */
+	private static List<String[]> readCsvFile(String filePath) {
+
+		Csv csv = null;
+		InputStream isTerm = null;
+		ByteArrayInputStream bais = null;
+		ByteArrayOutputStream baos = null;
+		PrintStream printStream = null;
+		
+		List<String[]> csvFileContent = new ArrayList<String[]>();
+
+		try {
+			if (StringUtils.isNotEmpty(filePath)) {
+
+				File file = new File(filePath);
+				if (file.exists()) {
+					csv = new Csv();
+
+					// Step 1: Read file byte array to prevent empty-value ending lines from breaking
+					baos = new ByteArrayOutputStream();
+					printStream = new PrintStream(baos, true, "UTF-8");
+					isTerm = new FileInputStream(file);
+					LineIterator lineIterator = IOUtils.lineIterator(isTerm, "UTF-8");
+					String line;
+					while (lineIterator.hasNext()) {
+						line = StringUtils.stripToNull(lineIterator.next());
+						if (line != null) {
+
+							// Add "_LINE_TERMINATED_" in the end of each line to prevent empty-value ending lines
+							line += csv.getFieldSeparatorRead() + "_LINE_";
+							printStream.println(line);
+						}
+					}
+					//bais = new ByteArrayInputStream(baos.toByteArray());
+					bais = new ByteArrayInputStream(baos.toByteArray());
+					
+					int n = bais.available();
+					byte[] bytes = new byte[n];
+					bais.read(bytes, 0, n);
+					String s = new String(bytes, StandardCharsets.UTF_8); // Or any encoding.
+					System.out.println(s);
+
+					// Step 2: Use CSV library to read input stream to get CSV file content with correct format
+					Iterator<String[]> csvRowIter = csv.read(bais, "UTF-8");
+
+					// Step 3: Convert Iterator<String[]> to List<String[]> for release above streams to close them
+					while (csvRowIter.hasNext()) {
+						csvFileContent.add(csvRowIter.next());
+					}
+				}
+			}
+		} catch (FileNotFoundException e) {
+			System.out.println("ccccc");
+		} catch (IOException e) {
+		} finally {
+			try {
+				if (isTerm != null) {
+					isTerm.close();
+				}
+				if (bais != null) {
+					bais.close();
+				}
+				if (baos != null) {
+					baos.close();
+				}
+				if (printStream != null) {
+					printStream.close();
+				}
+				if (csv != null) {
+					csv.close();
+				}
+			} catch (IOException e) {
+			}
+		}
+		return csvFileContent;
 	}
 }

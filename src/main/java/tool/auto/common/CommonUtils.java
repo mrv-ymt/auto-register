@@ -11,15 +11,27 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.UnexpectedAlertBehaviour;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class CommonUtils {
+	
+	private static final String EMAIL_PASS = "Dragon0104146890";
 
 	/**
 	 * Get list of email from file
@@ -258,7 +270,7 @@ public class CommonUtils {
 		}
 		return name + num;
 	}
-	
+
 	/**
 	 * Use wait driver to wait until page loading complete
 	 * 
@@ -267,6 +279,19 @@ public class CommonUtils {
 	public static void waitForLoad(WebDriver driver) {
 		new WebDriverWait(driver, 30).until((ExpectedCondition<Boolean>) wd -> ((JavascriptExecutor) wd)
 				.executeScript("return document.readyState").equals("complete"));
+	}
+
+	/**
+	 * Use wait driver to wait until page loading complete with Sleep time
+	 * 
+	 * @param driver
+	 * @param milisecond
+	 * @throws InterruptedException 
+	 */
+	public static void waitForLoad(WebDriver driver, long milisecond) throws InterruptedException {
+		new WebDriverWait(driver, 30).until((ExpectedCondition<Boolean>) wd -> ((JavascriptExecutor) wd)
+				.executeScript("return document.readyState").equals("complete"));
+		TimeUnit.MILLISECONDS.sleep(milisecond);
 	}
 	
 	/**
@@ -373,5 +398,109 @@ public class CommonUtils {
 			} catch (IOException ex) {
 			}
 		}
+	}
+
+	/**
+	 * Create Web Driver
+	 * 
+	 * @param isChrome 
+	 * @return driver
+	 */
+	public static WebDriver createWebDriver(boolean isChrome) {
+
+		WebDriver driver;
+		if (isChrome) {
+			Path filePath = Paths.get("src", "main", "resources", "service-tool", "chromedriver.exe");
+			System.setProperty("webdriver.chrome.driver", filePath.toString());
+			ChromeOptions ChromeOptions = new ChromeOptions();
+			ChromeOptions.setCapability(CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR, UnexpectedAlertBehaviour.ACCEPT);
+			driver = new ChromeDriver(ChromeOptions);
+		} else {
+			Path filePath = Paths.get("src", "main", "resources","service-tool", "geckodriver.exe");
+			System.setProperty("webdriver.gecko.driver", filePath.toString());
+			FirefoxOptions firefoxOptions = new FirefoxOptions();
+			firefoxOptions.setCapability(CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR, UnexpectedAlertBehaviour.ACCEPT);
+			driver = new FirefoxDriver(firefoxOptions);
+		}
+
+		driver.manage().deleteAllCookies();
+		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+		return driver;
+	}
+	
+	public static void confirmMail(WebDriver driver, String email, String defineConfirmPath, String mailSender,
+			int mailType) throws InterruptedException {
+
+		int count = 0;
+		String confirmPath;
+		WebElement element;
+		List<WebElement> unReadMailList;
+		List<WebElement> confirmPathsList;
+		JavascriptExecutor js = (JavascriptExecutor) driver;
+		System.out.println("Confirm mail === START");
+
+		try {
+			driver.get("https://accounts.google.com/signin/v2/identifier?continue="
+					+ "https%3A%2F%2Fmail.google.com%2Fmail%2F&service=mail&sacu=1&rip=1&flowName=GlifWebSignIn&flowEntry=ServiceLogin");
+			CommonUtils.waitForLoad(driver, 1000);
+			if (!"https://mail.google.com/mail/u/0/#inbox".equals(driver.getCurrentUrl())) {
+
+				// Login gmail
+				element = driver.findElement(By.id("identifierId"));
+				element.sendKeys(email);
+				driver.findElement(By.id("identifierNext")).click();
+				CommonUtils.waitForLoad(driver, 500);
+				element = driver.findElement(By.name("password"));
+				element.sendKeys(EMAIL_PASS);
+
+				WebDriverWait wait = new WebDriverWait(driver, 200);
+				element = wait.until(ExpectedConditions.elementToBeClickable(By.id("passwordNext")));
+				element.click();
+			}
+			CommonUtils.waitForLoad(driver, 1000);
+
+			unReadMailList = driver.findElements(By.xpath("//*[@class='zF']"));
+			while (unReadMailList.size() == 0 && count < 3) {
+				driver.get("https://mail.google.com");
+				CommonUtils.waitForLoad(driver, 1000);
+				unReadMailList = driver.findElements(By.xpath("//*[@class='zF']"));
+				count++;
+			}
+			for (WebElement unReadMail : unReadMailList) {
+				if (unReadMail.isDisplayed() && (mailSender.equals(unReadMail.getAttribute("email")))) {
+
+					// Read confirm mail
+					unReadMail.click();
+					CommonUtils.waitForLoad(driver, 1000);
+
+					if (mailType == 1) {
+						List<WebElement> listATag = driver.findElements(By.linkText(defineConfirmPath));
+						
+						if (listATag.size() > 0) {
+							js.executeScript("arguments[0].click();", listATag.get(listATag.size() - 1));
+							CommonUtils.waitForLoad(driver, 1000);
+						} else {
+							confirmMail(driver, email, defineConfirmPath, mailSender, mailType);
+						}
+					} else {
+						confirmPathsList = driver.findElements(By.tagName("a"));
+						for (WebElement elm : confirmPathsList) {
+							if (elm.getText().indexOf(defineConfirmPath) != -1) {
+
+								confirmPath = elm.getAttribute("href");
+								js.executeScript("window.open('" + confirmPath + "','_blank');");
+								TimeUnit.SECONDS.sleep(1);
+								break;
+							}
+						}
+					}
+					break;
+				}
+			}
+		} catch (WebDriverException e) {
+			System.out.println("Exception: " + e);
+			confirmMail(driver, email, defineConfirmPath, mailSender, mailType);
+		}
+		System.out.println("Confirm mail === END");
 	}
 }
