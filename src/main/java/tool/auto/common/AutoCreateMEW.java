@@ -10,9 +10,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
@@ -35,11 +33,10 @@ public class AutoCreateMEW {
 			driver = new ChromeDriver();
 			driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 			WebElement element;
-			Set<String> mewsList = new LinkedHashSet<String>();
 
 			// Disable popup
 			driver.get(MEW);
-			TimeUnit.SECONDS.sleep((long) 1.5);
+			TimeUnit.SECONDS.sleep(1);
 			disablePopup();
 
 			String privateKey;
@@ -51,7 +48,7 @@ public class AutoCreateMEW {
 				// Login MEW
 				driver.get(MEW);
 				CommonUtils.waitForLoad(driver);
-				TimeUnit.SECONDS.sleep((long) 1.5);
+				TimeUnit.SECONDS.sleep(1);
 				
 				element = wait.until(ExpectedConditions
 						.visibilityOfElementLocated(By.className("icon-close")));

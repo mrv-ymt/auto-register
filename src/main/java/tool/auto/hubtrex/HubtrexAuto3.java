@@ -22,9 +22,8 @@ import tool.auto.common.CommonUtils;
 public class HubtrexAuto3 {
 
 	private static final int MAX_NUM_MAIL = 120;
-	private static final String EMAIL = "toithayhoavangtrencoxanh999999";
 	private static final String EMAIL_PASS = "Dragon0104146890";
-	private static final String REF_LINK = "https://account.hubtrex.com/FND7CA8C";
+	private static final String REF_LINK = "https://account.hubtrex.com/55UXF2JP";
 
 	private static List<String> emailsList;
 	private static List<String> inputNamesList;
@@ -34,7 +33,7 @@ public class HubtrexAuto3 {
 
 		emailsList = CommonUtils.getEmailsList("email_list2.txt");
 		inputNamesList = CommonUtils.getInputNames();
-		List<String> mewsList = CommonUtils.getMewsList("mew-list.txt");
+		List<String> mewsList = CommonUtils.getMewsList("mew-list3.txt");
 
 		Path filePath = Paths.get("src", "main", "resources","service-tool", "geckodriver.exe");
 		System.setProperty("webdriver.gecko.driver", filePath.toString());

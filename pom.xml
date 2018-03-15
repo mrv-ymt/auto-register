@@ -36,18 +36,6 @@
 			<artifactId>winium-webdriver</artifactId>
 			<version>0.1.0-1</version>
 		</dependency>
-		<dependency>
-            <groupId>com.adobe.aem</groupId>
-            <artifactId>uber-jar</artifactId>
-            <version>6.3.0</version>
-            <classifier>apis</classifier>
-        </dependency>
-             <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-imaging</artifactId>
-            <version>1.0-R1534292</version>
-            <scope>test</scope>
-        </dependency>
          <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>

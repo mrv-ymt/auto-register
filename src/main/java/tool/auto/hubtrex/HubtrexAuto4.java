@@ -18,11 +18,10 @@ import org.openqa.selenium.remote.CapabilityType;
 
 import tool.auto.common.CommonUtils;
 
-public class HubtrexAuto {
+public class HubtrexAuto4 {
 
-	private static final String EMAIL = "nguoilanoicuoiconduong23456789";
 	private static final String EMAIL_PASS = "Dragon0104146890";
-	private static final String REF_LINK = "https://account.hubtrex.com/ZMUJY4YD";
+	private static final String REF_LINK = "https://account.hubtrex.com/QRFVPUZY";
 
 	private static List<String> emailsList;
 	private static List<String> inputNamesList;
@@ -30,9 +29,9 @@ public class HubtrexAuto {
 
 	public static void main(String[] arg) throws InterruptedException {
 
-		emailsList = CommonUtils.getEmailsList("email_list.txt");
+		emailsList = CommonUtils.getEmailsList("email_list4.txt");
 		inputNamesList = CommonUtils.getInputNames();
-		List<String> mewsList = CommonUtils.getMewsList();
+		List<String> mewsList = CommonUtils.getMewsList("mew-list2.txt");
 
 		Path filePath = Paths.get("src", "main", "resources","service-tool", "geckodriver.exe");
 		System.setProperty("webdriver.gecko.driver", filePath.toString());
@@ -156,7 +155,7 @@ public class HubtrexAuto {
 			TimeUnit.SECONDS.sleep(1);
 			if (!"https://mail.google.com/mail/u/0/#inbox".equals(driver.getCurrentUrl())) {
 				WebElement gmail = driver.findElement(By.id("identifierId"));
-				gmail.sendKeys(EMAIL);
+				gmail.sendKeys(email);
 				driver.findElement(By.id("identifierNext")).click();
 				CommonUtils.waitForLoad(driver);
 				TimeUnit.MILLISECONDS.sleep(500);

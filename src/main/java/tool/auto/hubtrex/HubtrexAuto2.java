@@ -8,7 +8,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.UnexpectedAlertBehaviour;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -21,10 +20,8 @@ import tool.auto.common.CommonUtils;
 
 public class HubtrexAuto2 {
 
-	private static final int MAX_NUM_MAIL = 120;
-	private static final String EMAIL = "toithayhoavangtrencoxanh999999";
 	private static final String EMAIL_PASS = "Dragon0104146890";
-	private static final String REF_LINK = "https://account.hubtrex.com/DPQKGFN1";
+	private static final String REF_LINK = "https://account.hubtrex.com/55UXF2JP";
 
 	private static List<String> emailsList;
 	private static List<String> inputNamesList;
@@ -34,7 +31,7 @@ public class HubtrexAuto2 {
 
 		emailsList = CommonUtils.getEmailsList("email_list2.txt");
 		inputNamesList = CommonUtils.getInputNames();
-		List<String> mewsList = CommonUtils.getMewsList("mew-list2.txt");
+		List<String> mewsList = CommonUtils.getMewsList("mew-list3.txt");
 
 		Path filePath = Paths.get("src", "main", "resources","service-tool", "geckodriver.exe");
 		System.setProperty("webdriver.gecko.driver", filePath.toString());
@@ -123,8 +120,7 @@ public class HubtrexAuto2 {
 
 		driver.findElement(By.name("register-form[agree]")).click();
 		driver.findElement(By.name("register-button")).click();
-		CommonUtils.waitForLoad(driver);
-		TimeUnit.MILLISECONDS.sleep(200);
+		CommonUtils.waitForLoad(driver, 200);
 		while (!driver.getCurrentUrl().equals("https://account.hubtrex.com/thank-you")) {
 			TimeUnit.MILLISECONDS.sleep(100);
 			if (CommonUtils.existsElement("help-block-error", 1, driver)) {
@@ -132,16 +128,15 @@ public class HubtrexAuto2 {
 			}
 		}
 		
-		driver.get("https://account.hubtrex.com/user/resend");
-		CommonUtils.waitForLoad(driver);
-		TimeUnit.SECONDS.sleep(2);
-		
-		element = driver.findElement(By.name("resend-form[email]"));
-		element.clear();
-		element.sendKeys(email);
-		element.submit();
-		CommonUtils.waitForLoad(driver);
-		TimeUnit.SECONDS.sleep(3);
+//		driver.get("https://account.hubtrex.com/user/resend");
+//		CommonUtils.waitForLoad(driver);
+//		TimeUnit.SECONDS.sleep(2);
+//		
+//		element = driver.findElement(By.name("resend-form[email]"));
+//		element.clear();
+//		element.sendKeys(email);
+//		element.submit();
+//		CommonUtils.waitForLoad(driver);
 		return true;
 	}
 
@@ -160,7 +155,7 @@ public class HubtrexAuto2 {
 			TimeUnit.SECONDS.sleep(1);
 			if (!"https://mail.google.com/mail/u/0/#inbox".equals(driver.getCurrentUrl())) {
 				WebElement gmail = driver.findElement(By.id("identifierId"));
-				gmail.sendKeys(EMAIL);
+				gmail.sendKeys(email);
 				driver.findElement(By.id("identifierNext")).click();
 				CommonUtils.waitForLoad(driver);
 				TimeUnit.MILLISECONDS.sleep(500);
