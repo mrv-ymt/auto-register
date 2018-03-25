@@ -438,8 +438,91 @@ public class CommonUtils {
 		List<WebElement> confirmPathsList;
 		JavascriptExecutor js = (JavascriptExecutor) driver;
 		System.out.println("Confirm mail === START");
-
+		System.out.println(email);
+		
+		
 		try {
+			driver.get("https://accounts.google.com/signin/v2/identifier?continue="
+					+ "https%3A%2F%2Fmail.google.com%2Fmail%2F&service=mail&sacu=1&rip=1&flowName=GlifWebSignIn&flowEntry=ServiceLogin");
+			CommonUtils.waitForLoad(driver, 1000);
+			if (!"https://mail.google.com/mail/u/0/#inbox".equals(driver.getCurrentUrl())) {
+
+				// Login gmail
+				element = driver.findElement(By.id("identifierId"));
+				element.sendKeys(email);
+				driver.findElement(By.id("identifierNext")).click();
+				CommonUtils.waitForLoad(driver, 500);
+				element = driver.findElement(By.name("password"));
+				element.sendKeys(EMAIL_PASS);
+
+				WebDriverWait wait = new WebDriverWait(driver, 200);
+				element = wait.until(ExpectedConditions.elementToBeClickable(By.id("passwordNext")));
+				element.click();
+			}
+			CommonUtils.waitForLoad(driver, 1000);
+
+			unReadMailList = driver.findElements(By.xpath("//*[@class='zF']"));
+			while (unReadMailList.size() == 0 && count < 3) {
+				driver.get("https://mail.google.com");
+				CommonUtils.waitForLoad(driver, 1000);
+				unReadMailList = driver.findElements(By.xpath("//*[@class='zF']"));
+				count++;
+			}
+			for (WebElement unReadMail : unReadMailList) {
+				if (unReadMail.isDisplayed() && (mailSender.equals(unReadMail.getAttribute("email")))) {
+
+					// Read confirm mail
+					unReadMail.click();
+					CommonUtils.waitForLoad(driver, 1000);
+
+					if (mailType == 1) {
+						List<WebElement> listATag = driver.findElements(By.linkText(defineConfirmPath));
+						
+						if (listATag.size() > 0) {
+							js.executeScript("arguments[0].click();", listATag.get(listATag.size() - 1));
+							CommonUtils.waitForLoad(driver, 1000);
+						} else {
+							confirmMail(driver, email, defineConfirmPath, mailSender, mailType);
+						}
+					} else {
+						confirmPathsList = driver.findElements(By.tagName("a"));
+						for (WebElement elm : confirmPathsList) {
+							if (elm.getText().indexOf(defineConfirmPath) != -1) {
+
+								confirmPath = elm.getAttribute("href");
+								js.executeScript("window.open('" + confirmPath + "','_blank');");
+								TimeUnit.SECONDS.sleep(1);
+								break;
+							}
+						}
+					}
+					break;
+				}
+			}
+		} catch (WebDriverException e) {
+			System.out.println("Exception: " + e);
+			confirmMail(driver, email, defineConfirmPath, mailSender, mailType);
+		}
+		System.out.println("Confirm mail === END");
+	}
+	
+	public static void confirmMail(WebDriver driver, String email, String defineConfirmPath, String mailSender,
+			int mailType, String mailTabName) throws InterruptedException {
+
+		int count = 0;
+		String confirmPath;
+		WebElement element;
+		List<WebElement> unReadMailList;
+		List<WebElement> confirmPathsList;
+		JavascriptExecutor js = (JavascriptExecutor) driver;
+		System.out.println("Confirm mail === START");
+		System.out.println(email);
+		
+		try {
+			driver.switchTo().window(mailTabName);
+			CommonUtils.waitForLoad(driver, 1000);
+			js.executeScript("window.onbeforeunload = function(e){};");
+
 			driver.get("https://accounts.google.com/signin/v2/identifier?continue="
 					+ "https%3A%2F%2Fmail.google.com%2Fmail%2F&service=mail&sacu=1&rip=1&flowName=GlifWebSignIn&flowEntry=ServiceLogin");
 			CommonUtils.waitForLoad(driver, 1000);

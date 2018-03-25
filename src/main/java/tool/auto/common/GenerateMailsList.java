@@ -11,7 +11,7 @@ import java.util.Set;
 
 public class GenerateMailsList {
 
-	private static String inputMail = "celedionmyhearwillgoon99999999";
+	private static String inputMail = "wewillrockyouhowoldareyou12333";
 	
 	public static void main(String[] args) {
 		Set<String> mailsList = new LinkedHashSet<String>();
