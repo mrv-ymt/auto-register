@@ -11,7 +11,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import tool.auto.common.CommonUtils;
 
-public class KeltaAuto {
+public class KeltaAuto5 {
 	
 	private static final String MEW = "https://www.myetherwallet.com/";
 
@@ -22,7 +22,7 @@ public class KeltaAuto {
 
 		List<String> private1 = CommonUtils.getEmailsList("private1.txt");
 		List<String> private2 = CommonUtils.getEmailsList("private2.txt");
-		List<String> private3 = CommonUtils.getEmailsList("private3.txt");
+		List<String> private3 = CommonUtils.getEmailsList("private7.txt");
 		inputNamesList = CommonUtils.getInputNames();
 		driver = CommonUtils.createWebDriver(false);
 		String privateKey;

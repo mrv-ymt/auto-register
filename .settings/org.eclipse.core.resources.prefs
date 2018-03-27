@@ -1,4 +1,9 @@
 eclipse.preferences.version=1
+encoding//src/main/java/tool/auto/cmt/KeltaAuto.java=UTF-8
+encoding//src/main/java/tool/auto/cmt/KeltaAuto2.java=UTF-8
+encoding//src/main/java/tool/auto/cmt/KeltaAuto3.java=UTF-8
+encoding//src/main/java/tool/auto/cmt/KeltaAuto4.java=UTF-8
+encoding//src/main/java/tool/auto/cmt/KeltaAuto5.java=UTF-8
 encoding//src/main/java/tool/auto/common/AutoCreateMEW.java=UTF-8
 encoding//src/main/java/tool/auto/common/AutoCreateMEW2.java=UTF-8
 encoding//src/main/java/tool/auto/readexcel/ImportTagServlet.java=UTF-8

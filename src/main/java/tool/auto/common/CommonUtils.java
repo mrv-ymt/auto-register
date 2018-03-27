@@ -41,7 +41,7 @@ public class CommonUtils {
 	public static List<String> getEmailsList() {
 
 		List<String> emailsList = new ArrayList<String>();
-		Path inputNamesPath = Paths.get("src", "main", "resources", "email_list.txt");
+		Path inputNamesPath = Paths.get("src", "main", "resources", "input-mail", "email_list.txt");
 		BufferedReader br = null;
 		FileReader fr = null;
 
@@ -77,7 +77,7 @@ public class CommonUtils {
 	public static List<String> getEmailsList(String fileName) {
 
 		List<String> emailsList = new ArrayList<String>();
-		Path inputNamesPath = Paths.get("src", "main", "resources", fileName);
+		Path inputNamesPath = Paths.get("src", "main", "resources", "input-mail", fileName);
 		BufferedReader br = null;
 		FileReader fr = null;
 
